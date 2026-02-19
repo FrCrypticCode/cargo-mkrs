@@ -1,11 +1,11 @@
 # cargo-mkrs
 
-Cargo subcommand for generating Rust files
+## Cargo subcommand for generating Rust files
+
+mkrs automatically generates module tree stuff and pastes a file header.
 
 > [!WARNING]
 > This is an experimental application. It may or may not do catastrophic damage to you project directory.
-
-mkrs automatically generates module tree stuff and pastes a file header.
 
 ## Usage
 

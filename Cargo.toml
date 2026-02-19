@@ -1,7 +1,14 @@
 [package]
 name = "cargo-mkrs"
 version = "0.1.0"
+authors = ["xnlogical"]
 edition = "2024"
+description = "Cargo subcommand for generating Rust files"
+readme = "README.md"
+repository = "https://github.com/xnlogical/cargo-mkrs"
+license = "MIT"
+license-file = "LICENSE"
+keywords = ["cli", "generator", "utility"]
 
 [dependencies]
 anyhow = "1.0.101"
