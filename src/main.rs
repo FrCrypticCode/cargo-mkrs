@@ -13,12 +13,11 @@ use walkdir::WalkDir;
 mod config;
 
 #[derive(Parser, Debug)]
-#[command(name = "cargo-mkrs")]
+#[command(version, name = "cargo-mkrs")]
+#[command(about = "Cargo subcommand for generating Rust files")]
 struct Args {
-    /// Module path: foo::bar::baz or foo/bar/baz
     target: String,
 
-    /// Make module public (pub mod)
     #[arg(long)]
     public: bool,
 }
@@ -73,6 +72,7 @@ fn declare_module(module: &str, parent: &Path, public: bool) -> io::Result<()> {
 fn build_target_path(target: &str) -> anyhow::Result<PathBuf> {
     let mut path = env::current_dir()?;
     path.push(target);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
@@ -105,9 +105,9 @@ fn populate_root_module(f: &mut File, parent: &Path, public: bool) -> anyhow::Re
     {
         let path = entry.path();
 
-        // Only handle .rs files or directories with mod.rs
         let is_rs_file = path.extension() == Some(OsStr::new("rs"));
         let has_mod_rs = path.is_dir() && path.join("mod.rs").is_file();
+
         if !(is_rs_file || has_mod_rs) {
             continue;
         }
@@ -132,16 +132,13 @@ fn run(args: Args) -> anyhow::Result<()> {
     let mut path = build_target_path(&args.target)?;
     let target = extract_module_name(&path)?;
 
-    // declare in parent module if needed
     if let Some(parent) = find_parent(&path) {
         declare_module(&target, &parent, args.public)?;
     }
 
-    // create actual .rs file
     path.set_extension("rs");
     let mut f = create_module_file(&path, &config.header)?;
 
-    // if target is a root module, populate submodules
     if matches!(target.as_str(), "mod" | "lib" | "main") {
         let parent = path.parent().expect("invalid parent path");
         populate_root_module(&mut f, parent, args.public)?;

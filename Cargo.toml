@@ -1,6 +1,6 @@
 [package]
 name = "cargo-mkrs"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["xnlogical"]
 edition = "2024"
 description = "Cargo subcommand for generating Rust files"
