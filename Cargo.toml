@@ -1,0 +1,10 @@
+[package]
+name = "cargo-mkrs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.101"
+clap = { version = "4.5.59", features = ["derive"] }
+toml = "1.0.3"
+walkdir = "2.5.0"
