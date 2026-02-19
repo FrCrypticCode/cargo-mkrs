@@ -52,20 +52,16 @@ struct Args {
 
     /// Make module public (pub mod)
     #[arg(long)]
-    pub_mod: bool,
-
-    /// Do not write files, just print actions
-    #[arg(long)]
-    dry_run: bool,
+    public: bool,
 }
 
 fn declare_module(module: &str, parent: &Path, public: bool) -> io::Result<()> {
     let content = std::fs::read_to_string(parent)?;
 
     let mod_line = format!("mod {module};");
-    let pub_mod_line = format!("pub mod {module};");
+    let public_line = format!("pub mod {module};");
 
-    if content.contains(&mod_line) || content.contains(&pub_mod_line) {
+    if content.contains(&mod_line) || content.contains(&public_line) {
         return Ok(());
     }
 
@@ -131,7 +127,7 @@ fn run(args: Args) -> anyhow::Result<()> {
     let target = extract_module_name(&path)?;
 
     if let Some(parent) = find_parent(&path) {
-        declare_module(&target, &parent, args.pub_mod)?;
+        declare_module(&target, &parent, args.public)?;
     }
 
     path.set_extension("rs");
@@ -140,7 +136,7 @@ fn run(args: Args) -> anyhow::Result<()> {
 
     if matches!(target.as_str(), "mod" | "lib" | "main") {
         let parent = path.parent().expect("invalid parent path");
-        populate_root_module(&mut f, parent, args.pub_mod)?;
+        populate_root_module(&mut f, parent, args.public)?;
     }
 
     Ok(())
